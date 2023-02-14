@@ -1,17 +1,25 @@
 # .github/workflows/build.yml
-name: Node Build
+name: dotnet package build
 on: [push]
 
 jobs:
     mainbuild: 
-        runs-on: ${{ matrix.os }}         
-    steps:
-    - uses: actions/checkout@v1
-    - name: Run node.js on latest Windows.
-      uses: actions/setup-node@v1
-      with:
-        node-version: ${{ matrix.node-version }}
-    - name: Install NPM and build.
-      run: |
-        npm ci
-        npm run build
+        runs-on: ubuntu-latest
+        strategy:
+          matrix:
+            dotnet-version: [ '3.0', '3.1.x', '5.0.x' ]
+        steps:
+          # checkout the repo
+          - name: Checkout the repo
+            uses: actions/checkout@v3
+          # setup dotnet 
+          - name: Setup dotnet ${{ matrix.dotnet-version }}
+            uses: actions/setup-dotnet@v3
+            with:
+              dotnet-version: ${{ matrix.dotnet-version }}
+          # restore .Net dependencies
+          - name: restore dependencies
+            run: dotnet restore 
+          # build the project
+          - name: build project
+            run: dotnet build --configuration Release 
