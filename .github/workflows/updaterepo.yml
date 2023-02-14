@@ -3,7 +3,7 @@ name: build dotnet package
 on: [push]
 
 env:
-  AZURE_WEBAPP_NAME: '**/*.sln'     # set this to your application's name
+  AZURE_WEBAPP_NAME: aspnet-get-started.sln     # set this to your application's name
   ACTIONS_ALLOW_UNSECURE_COMMANDS: 'true'
 
 jobs:
@@ -14,8 +14,8 @@ jobs:
       - name: checkout the code 
         uses: actions/checkout@v2
         # setup dotnet environment
-      #- name: Setup MSBuild path        
-       # uses: microsoft/setup-msbuild@v1.0.1
+      - name: Setup MSBuild path        
+        uses: microsoft/setup-msbuild@v1.0.1
       # setup Nuget for restoring
       - name: Setup Nuget
         uses: NuGet/setup-nuget@v1.0.2
