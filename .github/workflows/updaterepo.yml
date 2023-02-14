@@ -5,6 +5,7 @@ on: [push]
 env:
   AZURE_WEBAPP_NAME: aspnet-get-started.sln     # set this to your application's name
   ACTIONS_ALLOW_UNSECURE_COMMANDS: 'true'
+  AZURE_WEBAPP_PACKAGE_PATH: published
 
 jobs:
    mainbuild:
@@ -25,3 +26,12 @@ jobs:
       # run the build
       - name: Run the build
         run: msbuild ${{ env.AZURE_WEBAPP_NAME }} /p:Configuration=Release
+      # publish the project
+      - name: Publish the project
+        run: msbuild ${{ env.AZURE_WEBAPP_NAME }} /p:Configuration=Release /p:DeployOnBuild=true /t:WebPublish /p:WebPublishMethod=FileSystem /p:publishUrl=${{ env.AZURE_WEBAPP_PACKAGE_PATH }} /p:PackageAsSingleFile=false
+      # upload the artifacts
+      - name: Upload the artifacts
+        uses: actions/upload-artifact@v1.0.0
+        with:
+          name: webapp
+          path: ${{ env.AZURE_WEBAPP_PACKAGE_PATH }}
